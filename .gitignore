@@ -1,0 +1,29 @@
+# KiCad auto-generated footprint info cache — large binary, machine-specific
+fp-info-cache
+
+# Legacy KiCad cache / backup files
+*.bck
+*-cache.lib
+*.kicad_sch-bak
+*.kicad_pcb-bak
+*.kicad_pro-bak
+
+# Auto-save backup directory — KiCad rotates ~10 versioned saves in here
+*-backups/
+
+# Per-user editor state (zoom, last opened sheet, panel layout, etc.)
+# Tracks every session — churns with no semantic content
+*.kicad_prl
+
+# Build/output artefacts (uncomment if you ever start exporting Gerbers
+# or BOMs into this directory; for now they live elsewhere)
+# gerbers/
+# *.gbr
+# *.drl
+# *.pos
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+*~

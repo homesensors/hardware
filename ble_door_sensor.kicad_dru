@@ -1,0 +1,6 @@
+(version 1)
+
+(rule "RF_feed_CPWG_clearance"
+    (condition "A.NetName == 'Net-(ANT1-FEED)' || B.NetName == 'Net-(ANT1-FEED)'")
+    (constraint clearance (min 0.15mm))
+)
