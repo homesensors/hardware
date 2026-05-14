@@ -7,7 +7,8 @@ PCB with STM32WB09KEVx + TCS40DPR Hall sensor + active-low LED + CR2032
 holder. Part of the [`homesensors`](https://github.com/homesensors/sensorkit)
 DIY smart-home sensor kit.
 
-<!-- ![PCB hero render](../sensorkit/docs/images/pcb.jpg) -->
+![Side A — KiCad render](https://raw.githubusercontent.com/homesensors/sensorkit/main/docs/images/ble_door_sensor_sideA.png)
+![Side B — KiCad render](https://raw.githubusercontent.com/homesensors/sensorkit/main/docs/images/ble_door_sensor_sideB.png)
 
 ## Revisions
 
