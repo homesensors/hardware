@@ -2,92 +2,71 @@
 
 [![License: CERN-OHL-P-2.0](https://img.shields.io/badge/License-CERN--OHL--P--2.0-blue.svg)](LICENSE)
 
-KiCad project for the `homesensors` BLE door sensor — a custom small
-PCB with STM32WB09KEVx + TCS40DPR Hall sensor + active-low LED + CR2032
-holder. Part of the [`homesensors`](https://github.com/homesensors/sensorkit)
-DIY smart-home sensor kit.
+Open-hardware KiCad projects for the
+[`homesensors`](https://github.com/homesensors/sensorkit) DIY
+smart-home sensor kit. Multiple PCBs live here as peer sub-projects
+under their own subfolders; each board is a self-contained KiCad
+project with its own README, BOM, and revision history.
 
-![Side A — KiCad render](https://raw.githubusercontent.com/homesensors/sensorkit/main/docs/images/ble_door_sensor_sideA.png)
-![Side B — KiCad render](https://raw.githubusercontent.com/homesensors/sensorkit/main/docs/images/ble_door_sensor_sideB.png)
+## Board family
 
-## Revisions
-
-| Tag | Status | What changed |
+| Subfolder | Status | What it is |
 |---|---|---|
-| `pcb-rev-a` | **Fabricated** | Initial fab. Known issues: missing VDDA_VCAP 0.22 µF decoupling cap; no external battery-monitor divider. Both worked around by hand-rework on the prototype unit. |
-| `pcb-rev-b` | *In progress* | Folds in the VDDA_VCAP cap and the external battery-monitor divider (1 MΩ / 1 MΩ + 1 µF X7R, midpoint into PB1 = ADC1_VINP1). |
+| [`door_sensor/`](door_sensor/) | **Rev A fabricated, Rev B at fab** | Single-purpose BLE door sensor (STM32WB09 + TCS40DPR Hall + CR2032). The first board in the family; what the rest of `homesensors` was originally designed around. |
+| `motherboard_ble/` | *Planned* | Modular-architecture motherboard with on-board STM32WB09 BLE radio + power input + mikroBUS extension socket. Per [`docs/modular-spec.md`](https://github.com/homesensors/sensorkit/blob/main/docs/modular-spec.md). |
+| `motherboard_wifi/` | *Future* | ESP32-based motherboard, same connector contract. |
+| `motherboard_zigbee/` | *Future* | EFR32MG24-based motherboard. |
+| `motherboard_lora/` | *Future* | STM32WLE5-based motherboard. |
+| `extension_door/` | *Planned* | Door-contact sensor as a modular extension (replaces the standalone `door_sensor/` once the modular line stabilises). |
+| `extension_temp_humidity/` | *Future* | Temperature + humidity I2C extension. |
+| *(more extensions)* | *Future* | Motion, leak, fire, power, audio, vibration… see modular-spec §5.4 ID table. |
 
-Check out a specific revision:
-```bash
-git checkout pcb-rev-a   # or pcb-rev-b when available
+## Repository layout
+
+```
+hardware/
+├── README.md                ← this file
+├── LICENSE                  ← CERN-OHL-P-2.0, applies to every board
+├── .gitignore               ← KiCad cruft (backups, fp-info-cache, *.kicad_prl)
+├── libraries/               ← shared symbol/footprint libs (added when there's something to share)
+│   ├── homesensors.kicad_sym   (planned)
+│   └── homesensors.pretty/     (planned)
+└── <board>/                 ← per-board KiCad project (one subfolder per PCB)
+    ├── README.md            ← board-specific docs + revision history
+    ├── <name>.kicad_pro
+    ├── <name>.kicad_sch
+    ├── <name>.kicad_pcb
+    ├── <name>.kicad_dru     ← design rules
+    ├── <name>.csv           ← BOM export
+    ├── fab/                 ← (when generated) Gerbers + drill + P&P
+    ├── bom/                 ← (when generated) sourcing-ready BOM with LCSC PNs
+    └── 3d/                  ← (when generated) board-level renders
 ```
 
-## What's in the repo
+Each board's project lives in its own subfolder so that KiCad's
+`<project>-backups/` dir stays adjacent to the project that produced
+it, and so that `fab/` outputs from one board don't mix with another.
 
-| Path | What |
-|---|---|
-| `ble_door_sensor.kicad_pro` / `.kicad_sch` / `.kicad_pcb` | KiCad 7+ project files. |
-| `ble_door_sensor.kicad_dru` | Custom design rules. |
-| `ble_door_sensor.csv` | BOM exported from KiCad (informational). |
-| `fab/` | *(when generated)* Ready-to-fab Gerber zip, drill files, pick-and-place CSV. |
-| `bom/` | *(when generated)* BOM with LCSC / Mouser part numbers, suitable for direct order. |
-| `TCS40DPR_STM32WB09_v9.kicad_sch` | Legacy standalone schematic from an earlier exploration phase, kept for reference. |
+## Versioning
 
-## Quick fab
+Tags are namespaced by board: `door_sensor-rev-a`, `motherboard_ble-rev-a`,
+etc. Each board carries its own revision sequence and is fabbed
+independently.
 
-1. **Tag**: `git checkout pcb-rev-a` (or whichever rev you want).
-2. **Open** `ble_door_sensor.kicad_pro` in KiCad 7+.
-3. **PCB Editor → File → Plot** → Gerber + drill files → submit to
-   JLCPCB / PCBWay / OSH Park / Aisler.
-4. **BOM**: use `ble_door_sensor.csv` with the LCSC part numbers; most
-   fabs will assemble in-house from this BOM directly.
-
-The PCB is hand-solderable at 0603 / 0805 sizes but the WB09KEVx in
-QFN32 is best assembled by the fab.
-
-## Design notes
-
-- **MCU**: STM32WB09KEVx (QFN32). On-chip 2.4 GHz BLE.
-- **Sensor**: Toshiba TCS40DPR Hall (active-low, single-ended).
-  Magnet absent = sensor reads `1` = door open.
-- **LED**: active-low, push-pull, on PA1, with a 510 Ω series resistor.
-- **BLE matching**: 20 pF series cap → MLPF-NRG-01D3 → 50 Ω microstrip
-  → chip antenna (Johanson 2450AT18A0100E or compatible).
-- **Battery monitor**: external divider 1 MΩ / 1 MΩ + 1 µF X7R, midpoint
-  into PB1 = ADC1_VINP1. Quiescent current ~1.5 µA. (Rev B; hand-soldered
-  on Rev A.)
-- **VDDA_VCAP**: 0.22 µF decoupling on pin 28. (Rev B; hand-soldered on
-  Rev A.)
-- **HSE crystal**: 32 MHz. Firmware sets `XTAL_StartupTime` to 800 µs.
-
-For the long-form design history, including the bring-up gotchas (PB3
-JTDO default pull-up, ADC sample-and-hold droop with too-small
-reservoir cap), see the firmware repo's `HANDOVER.md` at
-[`homesensors/firmware`](https://github.com/homesensors/firmware).
-
-## Bring-up / known-good checks
-
-After fabricating a new board:
-
-1. **Visual / DMM**: check VDDA_VCAP cap (pin 28) is populated, no
-   solder bridges around the QFN32, divider resistors read ~1 MΩ each.
-2. **Power-on**: cell + LED behaviour matches spec — LED blinks at
-   ~1 Hz heartbeat in boot phase when magnet absent.
-3. **BLE smoke**: with nRF Connect or `bluetoothctl scan on`, the
-   device should appear with service-data UUID 0xFCD2. Service data
-   byte sequence starts with `44 00 …`.
-4. **HA discovery**: HA's BTHome integration auto-discovers the device
-   within seconds. Confirm an entity tree with `opening`, `battery`,
-   `packet_id`, `timestamp`.
+For backward-compatibility with the early period when `hardware/` had
+only the door sensor at its root, the unscoped tags `pcb-rev-a` and
+`pcb-rev-b` are preserved as aliases pointing at the same commits as
+`door_sensor-rev-a` and `door_sensor-rev-b` respectively. Don't add
+unscoped tags going forward.
 
 ## License
 
 CERN-OHL-P-2.0 — see [LICENSE](LICENSE). Permissive open hardware:
-fork the design, fab it, sell physical units, no copyleft strings.
+fork the designs, fab them, sell physical units, no copyleft strings.
 Just preserve the licence + notices.
 
 ## Related repos
 
-- [`homesensors/sensorkit`](https://github.com/homesensors/sensorkit) — umbrella, protocol spec, build guide.
-- [`homesensors/firmware`](https://github.com/homesensors/firmware) — STM32WB09 firmware.
-- [`homesensors/homeassist`](https://github.com/homesensors/homeassist) — HA add-on.
+- [`homesensors/sensorkit`](https://github.com/homesensors/sensorkit) — umbrella docs, protocol spec, modular architecture spec, image gallery.
+- [`homesensors/firmware`](https://github.com/homesensors/firmware) — MCU firmware (currently for `door_sensor`; modular framework planned).
+- [`homesensors/homeassist`](https://github.com/homesensors/homeassist) — Home Assistant add-on (Tier 1.5 ACK daemon).
