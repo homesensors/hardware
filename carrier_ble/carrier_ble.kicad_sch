@@ -1,0 +1,20 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "0c1acdf3-1bb8-4596-a6fa-ced3330cb964")
+	(paper "A4")
+	(title_block
+		(title "Modular Sensors -- BLE PHY Carrier Board")
+		(date "2026-05-15")
+		(rev "0.1/Rev.A")
+		(company "SpectralWarrior")
+	)
+	(lib_symbols)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)

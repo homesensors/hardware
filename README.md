@@ -13,10 +13,10 @@ project with its own README, BOM, and revision history.
 | Subfolder | Status | What it is |
 |---|---|---|
 | [`door_sensor/`](door_sensor/) | **Rev A fabricated, Rev B at fab** | Single-purpose BLE door sensor (STM32WB09 + TCS40DPR Hall + CR2032). The first board in the family; what the rest of `homesensors` was originally designed around. |
-| `motherboard_ble/` | *Planned* | Modular-architecture motherboard with on-board STM32WB09 BLE radio + power input + mikroBUS extension socket. Per [`docs/modular-spec.md`](https://github.com/homesensors/sensorkit/blob/main/docs/modular-spec.md). |
-| `motherboard_wifi/` | *Future* | ESP32-based motherboard, same connector contract. |
-| `motherboard_zigbee/` | *Future* | EFR32MG24-based motherboard. |
-| `motherboard_lora/` | *Future* | STM32WLE5-based motherboard. |
+| `carrier_ble/` | *Planned* | Modular-architecture carrier board with on-board STM32WB09 BLE radio + power input + mikroBUS extension socket. Per [`docs/modular-spec.md`](https://github.com/homesensors/sensorkit/blob/main/docs/modular-spec.md). |
+| `carrier_wifi/` | *Future* | ESP32-based carrier board, same connector contract. |
+| `carrier_zigbee/` | *Future* | EFR32MG24-based carrier board. |
+| `carrier_lora/` | *Future* | STM32WLE5-based carrier board. |
 | `extension_door/` | *Planned* | Door-contact sensor as a modular extension (replaces the standalone `door_sensor/` once the modular line stabilises). |
 | `extension_temp_humidity/` | *Future* | Temperature + humidity I2C extension. |
 | *(more extensions)* | *Future* | Motion, leak, fire, power, audio, vibration… see modular-spec §5.4 ID table. |
@@ -49,7 +49,7 @@ it, and so that `fab/` outputs from one board don't mix with another.
 
 ## Versioning
 
-Tags are namespaced by board: `door_sensor-rev-a`, `motherboard_ble-rev-a`,
+Tags are namespaced by board: `door_sensor-rev-a`, `carrier_ble-rev-a`,
 etc. Each board carries its own revision sequence and is fabbed
 independently.
 
